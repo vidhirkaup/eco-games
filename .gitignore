@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+/testdb.lck
+/testdb.log
+/testdb.properties
+/testdb.script
