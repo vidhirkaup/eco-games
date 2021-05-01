@@ -3,6 +3,7 @@ package com.vlabs.eco.games.config;
 import com.vlabs.eco.games.batch.GameItemProcessor;
 import com.vlabs.eco.games.domain.Game;
 import com.vlabs.eco.games.domain.GameInput;
+import com.vlabs.eco.games.domain.Team;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
@@ -23,10 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableBatchProcessing
@@ -95,30 +99,49 @@ public class BatchConfig {
 @Component
 class JobCompletionNotificationListener extends JobExecutionListenerSupport {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final EntityManager em;
 
     @Autowired
-    public JobCompletionNotificationListener(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public JobCompletionNotificationListener(EntityManager em) {
+        this.em = em;
     }
 
     @Override
-    public void beforeJob(JobExecution jobExecution) {
-        log.info(">>> job started");
-        super.beforeJob(jobExecution);
-    }
-
-    @Override
+    @Transactional
     public void afterJob(JobExecution jobExecution) {
         if (jobExecution.getStatus().equals(BatchStatus.COMPLETED)) {
-            log.info("job complete <<<");
-            jdbcTemplate.query("SELECT team1, team1, date from game",
-                    (rs, row) -> String.format("Team 1: {%s}, Team 2: {%s}, Date: {%s}",
-                            rs.getString(1),
-                            rs.getString(2),
-                            rs.getString(3)))
-                    .forEach(str -> log.info(str));
+
+            Map<String, Team> teamData = new HashMap<>();
+
+            em.createQuery("select g.team1, count(g.team1) from Game g group by g.team1", Object[].class)
+                    .getResultList()
+                    .stream()
+                    .map(e -> new Team((String) e[0], (long) e[1]))
+                    .forEach(team -> teamData.put(team.getTeamName(), team));
+
+            em.createQuery("select g.team2, count(g.team2) from Game g group by g.team2", Object[].class)
+                    .getResultList()
+                    .stream()
+                    .forEach(e -> {
+                        Team team = teamData.get((String) e[0]);
+                        team.setTotalGames(team.getTotalGames() + (long) e[1]);
+                    });
+
+            em.createQuery("select g.winner, count(g.winner) from Game g group by g.winner", Object[].class)
+                    .getResultList()
+                    .stream()
+                    .forEach(e -> {
+                        Team team = teamData.get((String) e[0]);
+                        if (team != null) {
+                            team.setTotalWins((Long) e[1]);
+                        }
+                    });
+
+            log.info(teamData.toString());
+            teamData.values()
+                    .forEach(team -> {
+                        em.persist(team);
+                    });
         }
-        super.afterJob(jobExecution);
     }
 }
