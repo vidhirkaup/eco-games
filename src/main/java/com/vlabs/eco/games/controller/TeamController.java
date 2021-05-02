@@ -4,6 +4,8 @@ import com.vlabs.eco.games.domain.Team;
 import com.vlabs.eco.games.repository.GameRepository;
 import com.vlabs.eco.games.repository.TeamRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +34,8 @@ public class TeamController {
     public Team getTeam(@PathVariable String teamName){
         Team team = teamRepository.findByTeamName(teamName);
 
-        team.setGames(gameRepository.getByTeam1OrTeam2OrderByDateDesc(teamName, teamName));
+        Pageable pagable = PageRequest.of(0, 5);
+        team.setGames(gameRepository.getByTeam1OrTeam2OrderByDateDesc(teamName, teamName, pagable));
 
         return team;
     }
