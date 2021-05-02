@@ -9,6 +9,6 @@ import java.util.List;
 @Component
 public interface GameRepository extends CrudRepository<Game, Long> {
 
-    public List<Game> getByTeam1OrTeam2(String team1, String team2);
+    public List<Game> getByTeam1OrTeam2OrderByDateDesc(String team1, String team2);
 
 }

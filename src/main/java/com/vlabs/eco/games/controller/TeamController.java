@@ -32,7 +32,7 @@ public class TeamController {
     public Team getTeam(@PathVariable String teamName){
         Team team = teamRepository.findByTeamName(teamName);
 
-        team.setGames(gameRepository.getByTeam1OrTeam2(teamName, teamName));
+        team.setGames(gameRepository.getByTeam1OrTeam2OrderByDateDesc(teamName, teamName));
 
         return team;
     }
