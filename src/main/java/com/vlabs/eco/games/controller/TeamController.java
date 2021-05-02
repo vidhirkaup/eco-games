@@ -1,6 +1,7 @@
 package com.vlabs.eco.games.controller;
 
 import com.vlabs.eco.games.domain.Team;
+import com.vlabs.eco.games.repository.GameRepository;
 import com.vlabs.eco.games.repository.TeamRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +16,11 @@ public class TeamController {
 
     private TeamRepository teamRepository;
 
-    public TeamController(TeamRepository teamRepository) {
+    private GameRepository gameRepository;
+
+    public TeamController(TeamRepository teamRepository, GameRepository gameRepository) {
         this.teamRepository = teamRepository;
+        this.gameRepository = gameRepository;
     }
 
     @GetMapping("/teams")
@@ -26,7 +30,11 @@ public class TeamController {
 
     @GetMapping("/teams/{teamName}")
     public Team getTeam(@PathVariable String teamName){
-        return teamRepository.findByTeamName(teamName);
+        Team team = teamRepository.findByTeamName(teamName);
+
+        team.setGames(gameRepository.getByTeam1OrTeam2(teamName, teamName));
+
+        return team;
     }
 
 }
