@@ -21,11 +21,13 @@ public class TeamController {
 
     @GetMapping("/teams")
     public List<Team> getTeams() {
+        log.info("getting all teams");
         return teamService.getAllTeams();
     }
 
     @GetMapping("/teams/{teamName}")
     public Team getTeam(@PathVariable String teamName) {
+        log.info(String.format("get details for [%s]", teamName));
         return teamService.getTeam(teamName);
     }
 
