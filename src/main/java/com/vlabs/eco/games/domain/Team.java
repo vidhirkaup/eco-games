@@ -2,10 +2,8 @@ package com.vlabs.eco.games.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +18,9 @@ public class Team {
     private String teamName;
     private long totalGames;
     private long totalWins;
+
+    @Transient
+    private List<Game> games;
 
     public Team(String teamName, long totalGames){
         this.teamName = teamName;
