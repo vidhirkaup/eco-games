@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public interface GameRepository extends CrudRepository<Game, Long> {
 
-    public List<Game> getByTeam1OrTeam2OrderByDateDesc(String team1, String team2, Pageable pageable);
+    List<Game> getByTeam1OrTeam2OrderByDateDesc(String team1, String team2, Pageable pageable);
 
     default List<Game> findLatestGamesByTeam(String teamName, int count) {
         return getByTeam1OrTeam2OrderByDateDesc(teamName, teamName, PageRequest.of(0, count));

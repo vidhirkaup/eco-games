@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Slf4j
 public class GameItemProcessor implements ItemProcessor<GameInput, Game> {
     @Override
-    public Game process(GameInput gameInput) throws Exception {
+    public Game process(GameInput gameInput) {
         Game game = new Game();
 
         game.setId(Long.parseLong(gameInput.getId()));

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface TeamRepository extends CrudRepository<Team, Long> {
-    public Team findByTeamName(String teamName);
+    Team findByTeamName(String teamName);
 }

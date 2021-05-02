@@ -1,8 +1,7 @@
 package com.vlabs.eco.games.controller;
 
 import com.vlabs.eco.games.domain.Team;
-import com.vlabs.eco.games.repository.GameRepository;
-import com.vlabs.eco.games.repository.TeamRepository;
+import com.vlabs.eco.games.service.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,27 +13,20 @@ import java.util.List;
 @RestController
 public class TeamController {
 
-    private TeamRepository teamRepository;
+    private final TeamService teamService;
 
-    private GameRepository gameRepository;
-
-    public TeamController(TeamRepository teamRepository, GameRepository gameRepository) {
-        this.teamRepository = teamRepository;
-        this.gameRepository = gameRepository;
+    public TeamController(TeamService teamService) {
+        this.teamService = teamService;
     }
 
     @GetMapping("/teams")
     public List<Team> getTeams() {
-        return (List<Team>) teamRepository.findAll();
+        return teamService.getAllTeams();
     }
 
     @GetMapping("/teams/{teamName}")
     public Team getTeam(@PathVariable String teamName) {
-        Team team = teamRepository.findByTeamName(teamName);
-
-        team.setGames(gameRepository.findLatestGamesByTeam(teamName, 5));
-
-        return team;
+        return teamService.getTeam(teamName);
     }
 
 }
