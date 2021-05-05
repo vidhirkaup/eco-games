@@ -10,6 +10,8 @@ import java.util.List;
 @Service
 public class TeamService {
 
+    public static final int NUMBER_OF_GAMES = 4;
+
     private final TeamRepository teamRepository;
 
     private final GameRepository gameRepository;
@@ -25,7 +27,7 @@ public class TeamService {
 
     public Team getTeam(String teamName) {
         Team team = teamRepository.findByTeamName(teamName);
-        team.setGames(gameRepository.findLatestGamesByTeam(teamName, 3));
+        team.setGames(gameRepository.findLatestGamesByTeam(teamName, NUMBER_OF_GAMES));
         return team;
     }
 }
