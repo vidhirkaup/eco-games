@@ -1,12 +1,11 @@
 package com.vlabs.eco.games.controller;
 
+import com.vlabs.eco.games.domain.Game;
 import com.vlabs.eco.games.domain.Team;
+import com.vlabs.eco.games.service.GameService;
 import com.vlabs.eco.games.service.TeamService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,8 +16,11 @@ public class TeamController {
 
     private final TeamService teamService;
 
-    public TeamController(TeamService teamService) {
+    private final GameService gameService;
+
+    public TeamController(TeamService teamService, GameService gameService) {
         this.teamService = teamService;
+        this.gameService = gameService;
     }
 
     @GetMapping("/teams")
@@ -31,6 +33,12 @@ public class TeamController {
     public Team getTeam(@PathVariable String teamName) {
         log.info(String.format("get details for [%s]", teamName));
         return teamService.getTeam(teamName);
+    }
+
+    @GetMapping("/teams/{teamName}/games")
+    public List<Game> getGames(@PathVariable String teamName, @RequestParam int year) {
+        log.info(String.format("get games for [%s] in [%s]", teamName, year));
+        return gameService.getGames(teamName, year);
     }
 
 }
