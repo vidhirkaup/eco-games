@@ -23,7 +23,7 @@ public interface GameRepository extends CrudRepository<Game, Long> {
         return getByTeam1OrTeam2OrderByDateDesc(teamName, teamName, PageRequest.of(0, count));
     }
 
-    @Query("select g from Game g where (g.team1 = :teamName or g.team2 = :teamName) and (g.date between :date1 and :date2)" )
+    @Query("select g from Game g where (g.team1 = :teamName or g.team2 = :teamName) and (g.date between :date1 and :date2) order by g.date desc" )
     List<Game> findGamesByYear(@Param("teamName") String teamName,
                                @Param("date1") LocalDate date1,
                                @Param("date2") LocalDate date2);
