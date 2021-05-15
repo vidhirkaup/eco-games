@@ -19,6 +19,6 @@ public class GameService {
     public List<Game> getGames(String teamName, int year) {
         LocalDate dateFrom = LocalDate.of(year, 1, 1);
         LocalDate dateTo = LocalDate.of(year + 1, 1, 1);
-        return gameRepository.getByTeam1AndDateBetweenOrTeam2AndDateBetweenOrderByDateDesc(teamName, dateFrom, dateTo, teamName, dateFrom, dateTo);
+        return gameRepository.findGamesByYear(teamName, dateFrom, dateTo);
     }
 }
