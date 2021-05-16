@@ -35,7 +35,7 @@ public class TeamController {
         return teamService.getTeam(teamName);
     }
 
-    @GetMapping("/teams/{teamName}/games")
+    @GetMapping("/teams/{teamName}/plays")
     public List<Game> getGames(@PathVariable String teamName, @RequestParam int year) {
         log.info(String.format("get games for [%s] in [%s]", teamName, year));
         return gameService.getGames(teamName, year);
