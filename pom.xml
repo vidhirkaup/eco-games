@@ -13,9 +13,7 @@
 	<version>1.0</version>
 	<name>eco-games</name>
 	<description>service to manage game data</description>
-	<properties>
-		<java.version>16</java.version>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
